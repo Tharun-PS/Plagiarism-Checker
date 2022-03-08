@@ -5,6 +5,7 @@ import pandas as pd
 from flask import Flask
 from selenium import webdriver
 import os
+from flask_cors import CORS, cross_origin
 
 A = ("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 "
@@ -20,9 +21,11 @@ chrome_options.add_argument("--no-sandbox")
 driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route("/", methods=["GET", "POST"])
+@cross_origin()
 def check():
     result = pd.DataFrame()
     text = "As we all know by now, Russia has declared war against Ukraine. " \
