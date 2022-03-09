@@ -1,8 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import random
-import pandas as pd
-from flask import Flask
+from flask import Flask, render_template, request
 from selenium import webdriver
 import os
 from flask_cors import CORS, cross_origin
@@ -24,21 +23,11 @@ app = Flask(__name__)
 CORS(app)
 
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/check_plagiarism", methods=["GET", "POST"])
 @cross_origin()
 def check():
-    result = pd.DataFrame()
-    text = "As we all know by now, Russia has declared war against Ukraine. " \
-           "Russian troops had started surrounding Ukraine nearly 2 months ago and they finally " \
-           "declared war yesterday. Ukraine has seen multiple blasts on the border and there has been " \
-           "observed a major loss of life and destruction of property. " \
-           "The tension between Russia and Ukraine has always been evident since Putin, " \
-           "the Russian president has always been clear about he wants to reclaim Ukraine as his own," \
-           " and as to how it was part of the USSR. Putin recently announced that Russia " \
-           "will recognize the independence of 2 breakaway republics – Luhansk and Donetsk – which are " \
-           "closely bordering Ukraine and are arguably within Ukrainian territory.Hello Everyone," \
-           " Naa madan Gowricarvradrv"
-
+    result = []
+    text = request.form['message']
     if text[-1] == ".":
         text = text[:-1]
     text = text.replace("\t", ".")
@@ -81,16 +70,21 @@ def check():
                 print()
                 if sample_text in ' '.join(deep_page.stripped_strings).replace("\xa0", " "):
                     print("Match Found")
-                    result = result.append({"Sentence": sample_text, "Status": "Plagiarized", "Source": links[0]},
-                                           ignore_index=True)
+                    result.append({"Sentence": sample_text, "Status": "Plagiarized", "Source": links[0]})
                     break
             else:
                 print("Match not found")
-                result = result.append({"Sentence": sample_text, "Status": "Unique"}, ignore_index=True)
+                result.append({"Sentence": sample_text, "Status": "Unique"})
         else:
-            result = result.append({"Sentence": sample_text, "Status": "Unique"}, ignore_index=True)
+            result.append({"Sentence": sample_text, "Status": "Unique"})
     print(result)
-    return result.to_dict()
+    return result
+
+
+@app.route("/", methods=["GET", "POST"])
+@cross_origin()
+def main_page():
+    return render_template("main_page.html")
 
 
 if __name__ == "__main__":
