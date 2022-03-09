@@ -5,6 +5,7 @@ from flask import Flask, render_template, request
 from selenium import webdriver
 import os
 from flask_cors import CORS, cross_origin
+import json
 
 A = ("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 "
@@ -78,7 +79,7 @@ def check():
         else:
             result.append({"Sentence": sample_text, "Status": "Unique"})
     print(result)
-    return result
+    return json.dumps(result)
 
 
 @app.route("/", methods=["GET", "POST"])
