@@ -78,7 +78,7 @@ def check():
         else:
             result.append({"Sentence": sample_text, "Status": "Unique"})
     print(result)
-    return result
+    return "Done"
 
 
 @app.route("/", methods=["GET", "POST"])
