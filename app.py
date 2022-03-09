@@ -79,7 +79,7 @@ def check():
         else:
             result.append({"Sentence": sample_text, "Status": "Unique"})
     print(result)
-    return json.dumps(result)[0]
+    return json.dumps(json.loads(result), indent=4)
 
 
 @app.route("/", methods=["GET", "POST"])
